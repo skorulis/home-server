@@ -1,0 +1,3 @@
+[submodule "HomeClient/Frameworks/ASKCore"]
+	path = HomeClient/Frameworks/ASKCore
+	url = git@github.com:skorulis/ASKCore.git

@@ -4,6 +4,9 @@ import SwiftUI
 
 @main
 struct HomeClientApp: App {
+    
+    private let ioc = IOC(purpose: .normal)
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

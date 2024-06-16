@@ -5,6 +5,8 @@ import Network
 
 final class BonjourService {
     
+    static let serviceName = "sk-home"
+    
     var serverURL: URL?
     
     var browser: NWBrowser = {
@@ -82,7 +84,15 @@ final class BonjourService {
                 }
             case .failed(let error):
                 print("Failed to connect: \(error.localizedDescription)")
-            default:
+            case .setup:
+                print("Setup")
+            case .waiting(_):
+                print("Waiting")
+            case .preparing:
+                print("Preparing")
+            case .cancelled:
+                print("Cancelled")
+            @unknown default:
                 break
             }
         }
