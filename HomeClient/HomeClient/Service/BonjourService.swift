@@ -3,11 +3,11 @@
 import Foundation
 import Network
 
-final class BonjourService {
+final class BonjourService: ObservableObject {
     
     static let serviceName = "sk-home"
     
-    var serverURL: URL?
+    @Published var serverEndpoint: NWEndpoint?
     
     var browser: NWBrowser = {
         let parameters = NWParameters()
@@ -72,14 +72,9 @@ final class BonjourService {
             case .ready:
                 print("Connected to service")
                 if let endpoint = connection.currentPath?.remoteEndpoint {
-                    if case let .url(url) = endpoint {
-                        print("Got URL \(url)")
-                    }
-                    if case let .hostPort(host, port) = endpoint {
-                        let urlString = "http://\(Self.santize(host: host.debugDescription)):\(port)"
-                        self.serverURL = URL(string: urlString)
-                        
-                        print("Connected to", "\(self.serverURL!)")
+                    self.serverEndpoint = endpoint
+                    if let url = endpoint.url {
+                        print("Connected to", "\(url)")
                     }
                 }
             case .failed(let error):
@@ -100,11 +95,34 @@ final class BonjourService {
         connection.start(queue: .main)
     }
     
+    
+
+}
+
+extension NWEndpoint {
+    
     private static func santize(host: String) -> String {
         guard let end = host.firstIndex(of: "%") else {
             return host
         }
         return String(host[host.startIndex..<end])
     }
-
+    
+    var url: URL? {
+        switch self {
+        case .hostPort(let host, let port):
+            let urlString = "http://\(Self.santize(host: host.debugDescription)):\(port)"
+            return URL(string: urlString)
+        case .service:
+            return nil
+        case .unix:
+            return nil
+        case let .url(url):
+            return url
+        case .opaque:
+            return nil
+        @unknown default:
+            fatalError()
+        }
+    }
 }

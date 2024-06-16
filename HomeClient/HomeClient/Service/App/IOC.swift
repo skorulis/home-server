@@ -18,11 +18,12 @@ public final class IOC: IOCService {
     }
     
     private func registerViewModels() {
-        
+        container.main.register(SettingsViewModel.self) { SettingsViewModel.make(resolver: $0.main) }
     }
     
     private func registerServices() {
         container.register(BonjourService.self) { _ in BonjourService() }
+            .inObjectScope(.container)
     }
     
 }

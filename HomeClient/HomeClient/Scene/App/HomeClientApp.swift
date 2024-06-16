@@ -11,5 +11,6 @@ struct HomeClientApp: App {
         WindowGroup {
             ContentView()
         }
+        .environment(\.factory, ioc)
     }
 }
