@@ -21,14 +21,11 @@ struct NotionController: RouteCollection {
             "https://api.notion.com/v1/blocks/90070adc-6caf-4604-a31a-f2b7bcbd3bdd/children?page_size=100",
             headers: headers
         )
-        if var body = response.body {
-            var result = ""
-            while body.readableBytes > 0 {
-                result += body.readString(length: body.readableBytes) ?? ""
-            }
-            return result
-        }
-        return "ERROR"
+        
+        let entryList = try response.content.decode(Notion.ObjectList.self)
+        
+        print(entryList.results)
+        return response.body?.readFullString() ?? "ERROR"
     }
     
     private var headers: HTTPHeaders {
@@ -38,3 +35,13 @@ struct NotionController: RouteCollection {
     }
 }
 
+extension ByteBuffer {
+    func readFullString() -> String {
+        var copy = self
+        var result = ""
+        while copy.readableBytes > 0 {
+            result += copy.readString(length: copy.readableBytes) ?? ""
+        }
+        return result
+    }
+}
