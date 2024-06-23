@@ -8,5 +8,9 @@ public func configure(_ app: Application) async throws {
     // register routes
     try routes(app)
     
+    let secrets = RealSecrets()
+    
+    try app.register(collection: NotionController(secrets: secrets))
+    
     BonjourService.shared.start()
 }
