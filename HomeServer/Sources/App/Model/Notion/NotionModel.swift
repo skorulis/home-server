@@ -31,6 +31,18 @@ enum Notion {
         let type: String
         let text: Text
         let plain_text: String
+        
+        init(type: String, text: Text, plain_text: String) {
+            self.type = type
+            self.text = text
+            self.plain_text = plain_text
+        }
+        
+        init(plainText: String) {
+            self.type = "text"
+            self.text = .init(content: plainText)
+            self.plain_text = plainText
+        }
     }
     
     struct Text: Codable {

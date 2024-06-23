@@ -6,13 +6,14 @@ import Foundation
 enum Journal {
     
     struct Month: Codable {
+        let title: String
         let days: [Day]
     }
     
     struct Day: Codable {
         let date: Date
         
-        let entries: [Entry]
+        var entries: [Entry]
     }
     
     struct Entry: Codable {

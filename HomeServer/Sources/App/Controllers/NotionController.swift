@@ -5,6 +5,7 @@ import Vapor
 struct NotionController: RouteCollection {
     
     private let secrets: Secrets
+    private let converter = NotionJournalConverter()
     
     init(secrets: Secrets) {
         self.secrets = secrets
@@ -16,16 +17,17 @@ struct NotionController: RouteCollection {
     }
     
     @preconcurrency
-    private func fetch(req: Request) async throws -> String {
+    private func fetch(req: Request) async throws -> Journal.Month {
         let response = try await req.client.get(
             "https://api.notion.com/v1/blocks/90070adc-6caf-4604-a31a-f2b7bcbd3bdd/children?page_size=100",
             headers: headers
         )
         
-        let entryList = try response.content.decode(Notion.ObjectList.self)
+        print(response.body?.readFullString() ?? "ERROR")
         
-        print(entryList.results)
-        return response.body?.readFullString() ?? "ERROR"
+        let entryList = try response.content.decode(Notion.ObjectList.self)
+        let converted = try converter.convert(page: entryList, month: "June 2024")
+        return converted
     }
     
     private var headers: HTTPHeaders {
@@ -45,3 +47,5 @@ extension ByteBuffer {
         return result
     }
 }
+
+extension Journal.Month: Content {}
