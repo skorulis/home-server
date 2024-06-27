@@ -8,17 +8,14 @@ final class NotionJournalConverter {
         var context = Context(month: month)
         for block in page.results {
             if let heading = block.heading_2 {
-                let text = heading.rich_text?.first?.plain_text
-                context.newDay(heading: text!)
+                context.newDay(heading: heading.htmlText)
             } else if let bullet = block.bulleted_list_item {
-                let text = bullet.rich_text?.first?.plain_text
-                try context.addEntry(text: text!)
+                try context.addEntry(text: bullet.htmlText)
             } else if let todo = block.to_do {
                 if !todo.checked {
                     continue
                 }
-                let text = todo.rich_text?.first?.plain_text
-                try context.addEntry(text: text!)
+                try context.addEntry(text: todo.htmlText)
             } else if block.type == "paragraph" {
                 // Ignore
             } else {
@@ -28,6 +25,7 @@ final class NotionJournalConverter {
         
         return .init(title: month, days: context.allDays)
     }
+    
 }
 
 private extension NotionJournalConverter {
