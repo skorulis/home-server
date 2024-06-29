@@ -10,7 +10,7 @@ public func configure(_ app: Application) async throws {
     
     let secrets = RealSecrets()
     
-    try app.register(collection: NotionController(secrets: secrets))
+    try app.register(collection: NotionController(secrets: secrets, r2Service: .init(secrets: secrets)))
     
     BonjourService.shared.start()
 }

@@ -5,4 +5,11 @@ import Foundation
 /// Protocol to define what secrets and keys are used in the app. The real version of these values is not checked into the codebase
 protocol Secrets {
     var notionKey: String { get }
+    var aws: AWSSecrets { get }
+}
+
+struct AWSSecrets {
+    let accountID: String
+    let accessKeyId: String
+    let secretAccessKey: String
 }

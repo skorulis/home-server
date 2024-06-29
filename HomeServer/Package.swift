@@ -11,11 +11,13 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.99.3"),
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        .package(url: "https://github.com/soto-project/soto.git", from: "6.8.0"),
     ],
     targets: [
         .executableTarget(
             name: "App",
             dependencies: [
+                .product(name: "SotoS3", package: "soto"),
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),

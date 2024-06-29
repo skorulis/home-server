@@ -6,9 +6,11 @@ struct NotionController: RouteCollection {
     
     private let secrets: Secrets
     private let converter = NotionJournalConverter()
+    private let r2Service: JournalR2Service
     
-    init(secrets: Secrets) {
+    init(secrets: Secrets, r2Service: JournalR2Service) {
         self.secrets = secrets
+        self.r2Service = r2Service
     }
     
     func boot(routes: any RoutesBuilder) throws {
@@ -23,11 +25,18 @@ struct NotionController: RouteCollection {
             headers: headers
         )
         
-        print(response.body?.readFullString() ?? "ERROR")
+        // print(response.body?.readFullString() ?? "ERROR")
         
         let entryList = try response.content.decode(Notion.ObjectList.self)
         let converted = try converter.convert(page: entryList, month: "June 2024")
+        
+        try await uploadToR2(month: converted)
+        
         return converted
+    }
+    
+    private func uploadToR2(month: Journal.Month) async throws {
+        try await r2Service.uploadFile(text: "test")
     }
     
     private var headers: HTTPHeaders {
