@@ -25,11 +25,11 @@ struct JournalR2Service {
         )
     }
     
-    func uploadFile(text: String) async throws {
+    func uploadFile(text: String, path: String) async throws {
         let putRequest = S3.PutObjectRequest(
             body: .string(text),
             bucket: "journal-skorulis-com",
-            key: "file.txt"
+            key: path
         )
         
         _ = try await s3.putObject(putRequest)
